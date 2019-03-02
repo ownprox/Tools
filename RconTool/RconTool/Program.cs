@@ -27,7 +27,7 @@ namespace RconTool
 
         static void Main(string[] args)
         {
-            Console.Title = "Rcon Tool 1.0";
+            Console.Title = "Rcon Tool 1.1";
             if(File.Exists("RconServers.txt"))
             {
                 string[] splts;
@@ -63,7 +63,10 @@ namespace RconTool
                 Console.WriteLine("2. Broadcast");
                 Console.WriteLine("3. SaveWorld");
                 Console.WriteLine("4. Custom Rcon Command");
-                Console.WriteLine("5. Close Server\n");
+                Console.WriteLine("5. Wild Dinokill");
+                Console.WriteLine("6. Script command");
+                Console.WriteLine("7. Close Server");
+                Console.WriteLine("8. Close Server with time\n");
                 Console.Write("Enter a option: ");
                 if (int.TryParse(Console.ReadLine(), out Type))
                 {
@@ -104,13 +107,70 @@ namespace RconTool
                             Console.WriteLine(SendCommand(Data) + " Server(s) Sent Custom Command: " + Data + "\n");
                             break;
                         case 5:
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine(SendCommand("DestroyWildDinos") + " Wild Dino(s) kill(ed) \n");
+                            break;
+                        case 6:
+                            Console.Write("\nScript Command: ");
+                            Data = Console.ReadLine();
+                            Console.Clear();
+                            Console.ForegroundColor = ConsoleColor.Cyan;
+                            Console.WriteLine(SendCommand("ScriptCommand " + Data) + " Server(s) Sent Custom Script Command: " + Data + "\n");
+                            break;
+                        case 7:
                             Console.Write("\nAre you sure you want to save & close the server (yes or no)?: ");
-                            Data = Console.ReadLine();                            
+                            Data = Console.ReadLine();
                             Console.Clear();
                             if (Data.ToLower().Equals("yes"))
                             {
                                 Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.WriteLine(SendCommand("saveworld") + " Server(s) Saved \n");
+                                Thread.Sleep(10000);
                                 Console.WriteLine(SendCommand("DoExit") + " Server(s) Shutdown\n");
+                            }
+                            break;
+                        case 8:
+                            Console.Write("\nAre you sure you want to save & close the server (yes or no)?: ");
+                            Data = Console.ReadLine();
+                            if (Data.ToLower().Equals("yes"))
+                            {
+                                Console.ForegroundColor = ConsoleColor.Cyan;
+                                Console.WriteLine(SendCommand("saveworld") + " Server(s) Saved \n");
+
+                                Console.ForegroundColor = ConsoleColor.Green;
+                                Console.Write("\nPlease enter the min: ");
+                                int time = 0;
+                                int.TryParse(Console.ReadLine(), out time);
+                                Console.Clear();
+
+                                Console.ForegroundColor = ConsoleColor.Red;
+                                Console.WriteLine("Countdown started\nWaiting now {0} minute(s)\n", time);
+                                time = time * 60;
+
+                                while(time > 0)
+                                {
+                                    if(--time > 0)
+                                    {
+                                        Thread.Sleep(1000);
+#if DEBUG
+                                        Console.WriteLine("Countdown in {0} seconds\n", time);
+#endif
+                                        if (time <= 15)
+                                        {
+                                            Console.WriteLine("Countdown in {0} seconds\n", time);
+                                        }
+                                        else if((time % 60) == 0)
+                                        {
+                                            Console.WriteLine("Countdown in {0} minutes\n", (time / 60));
+                                        }
+                                    }
+                                    else
+                                    {
+                                        Console.WriteLine(SendCommand("DoExit") + " Server(s) Shutdown\n");
+                                    }
+
+                                }
                             }
                             break;
                     }
@@ -119,7 +179,7 @@ namespace RconTool
                 {
                     Console.Clear();
                     Console.ForegroundColor = ConsoleColor.Red;
-                    Console.WriteLine("Please Select a option inbetween 0-5\n");
+                    Console.WriteLine("Please Select a option inbetween 0-8\n");
                 }
             }
         }
