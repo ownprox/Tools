@@ -66,6 +66,7 @@ namespace TrampolineCreator
                 using (WebClient wc = new WebClient())
                 {
                     int ClassId = ClassIndex++;
+                    System.Net.ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                     wc.DownloadStringCompleted += (object s, DownloadStringCompletedEventArgs ea) => ParseArkHeader(ClassId, ClassId == ClassCount, s, ea);
                     wc.DownloadStringAsync(new Uri("https://raw.githubusercontent.com/Michidu/ARK-Server-API/master/version/Core/Public/API/" + (GameCombo.SelectedIndex == 0 ? "ARK" : "Atlas") + "/" + ArkHeader + ".h"));
                 }
